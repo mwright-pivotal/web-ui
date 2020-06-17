@@ -5,6 +5,14 @@ spring:
     allow-bean-definition-overriding: true
   profiles:
     active: local
+  cloud:
+    kubernetes:
+      config:
+        name: tanzu-bank
+        namespace: cf-workloads
+        sources:
+        # Spring Cloud Kubernetes will lookup a ConfigMap named c1 in namespace default-namespace
+        - name: tanzu-bank-config
 info:
   build:
     group: ${group}

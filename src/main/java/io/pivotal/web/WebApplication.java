@@ -10,8 +10,6 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
 @SpringBootApplication
-@EnableDiscoveryClient
-@EnableCircuitBreaker
 @EnableScheduling
 public class WebApplication {
 
