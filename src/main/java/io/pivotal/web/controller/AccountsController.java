@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
-
 import io.pivotal.web.domain.Account;
 import io.pivotal.web.domain.Order;
 import io.pivotal.web.domain.Search;

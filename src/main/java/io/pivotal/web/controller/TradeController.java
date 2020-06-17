@@ -5,6 +5,9 @@ import io.pivotal.web.service.AccountService;
 import io.pivotal.web.service.FlashService;
 import io.pivotal.web.service.PortfolioService;
 import io.pivotal.web.service.QuotesService;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,12 +43,12 @@ public class TradeController {
 	private AccountService accountService;
 
 	@ModelAttribute("accounts")
-	public List<Account> accounts( @RegisteredOAuth2AuthorizedClient("pivotalbank") OAuth2AuthorizedClient oAuth2AuthorizedClient) {
+	public Flux<Account> accounts( @RegisteredOAuth2AuthorizedClient("pivotalbank") OAuth2AuthorizedClient oAuth2AuthorizedClient) {
 		return accountService.getAccounts(oAuth2AuthorizedClient);
 	}
 
 	@ModelAttribute("portfolio")
-	public Portfolio portfolio( @RegisteredOAuth2AuthorizedClient("pivotalbank") OAuth2AuthorizedClient oAuth2AuthorizedClient) {
+	public Mono<Portfolio> portfolio( @RegisteredOAuth2AuthorizedClient("pivotalbank") OAuth2AuthorizedClient oAuth2AuthorizedClient) {
 		return portfolioService.getPortfolio(oAuth2AuthorizedClient);
 	}
 

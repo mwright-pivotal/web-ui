@@ -2,22 +2,26 @@ package io.pivotal.web.service;
 
 import com.newrelic.api.agent.Trace;
 import io.pivotal.web.domain.Account;
+import io.pivotal.web.domain.Portfolio;
+
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.cloud.netflix.hystrix.HystrixCommands;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction.oauth2AuthorizedClient;
 
@@ -52,24 +56,26 @@ public class AccountService {
 
 
     @Trace(async = true)
-    public List<Account> getAccounts(OAuth2AuthorizedClient oAuth2AuthorizedClient) {
+    public Flux<Account> getAccounts(OAuth2AuthorizedClient oAuth2AuthorizedClient) {
         logger.debug("Looking for accounts");
-        ParameterizedTypeReference<List<Account>> typeRef = new ParameterizedTypeReference<List<Account>>() {};
+//        ParameterizedTypeReference<List<Account>> typeRef = new ParameterizedTypeReference<List<Account>>() {};
 
-        Publisher<List<Account>> accountsPublisher = webClient
-                .get()
-                .uri("//" + accountsService + "/accounts")
-                .attributes(oauth2AuthorizedClient(oAuth2AuthorizedClient))
-                .retrieve()
-                .bodyToMono(typeRef);
+//        Publisher<List<Account>> accountsPublisher = webClient
+//                .get()
+//                .uri("//" + accountsService + "/accounts")
+//                .attributes(oauth2AuthorizedClient(oAuth2AuthorizedClient))
+//                .retrieve()
+//                .bodyToMono(typeRef);
 
-        List<Account> accounts = HystrixCommands
-                .from( accountsPublisher )
-                .eager()
-                .commandName("accounts")
-                .fallback(Flux.just(getAccountsFallback()))
-                .toMono()
-                .block();
+//        List<Account> accounts = HystrixCommands
+//                .from( accountsPublisher )
+//                .eager()
+//                .commandName("accounts")
+//                .fallback(Flux.just(getAccountsFallback()))
+//                .toMono()
+//                .block();
+        Consumer<Map<String, Object>> attrs = oauth2AuthorizedClient(oAuth2AuthorizedClient);
+		Flux<Account> accounts = webClient.get().uri("//" + accountsService + "/accounts").attributes(attrs).retrieve().bodyToFlux(Account.class);
         return accounts;
     }
 
@@ -80,24 +86,27 @@ public class AccountService {
 
 
     @Trace(async = true)
-    public List<Account> getAccountsByType(String type, OAuth2AuthorizedClient oAuth2AuthorizedClient) {
+    public Flux<Account> getAccountsByType(String type, OAuth2AuthorizedClient oAuth2AuthorizedClient) {
         logger.debug("Looking for account with type: " + type);
-        ParameterizedTypeReference<List<Account>> typeRef = new ParameterizedTypeReference<List<Account>>() {};
-        Publisher<List<Account>> accountsPublisher = webClient
-                .get()
-                .uri("//" + accountsService + "/accounts?type=" + type)
-                .attributes(oauth2AuthorizedClient(oAuth2AuthorizedClient))
-                .retrieve()
-                .bodyToMono(typeRef);
-
-        List<Account> accounts = HystrixCommands
-                .from( accountsPublisher )
-                .eager()
-                .commandName("accounts")
-                .fallback(Flux.just(getAccountsFallback()))
-                .toMono()
-                .block();
+//        ParameterizedTypeReference<List<Account>> typeRef = new ParameterizedTypeReference<List<Account>>() {};
+//        Publisher<List<Account>> accountsPublisher = webClient
+//                .get()
+//                .uri("//" + accountsService + "/accounts?type=" + type)
+//                .attributes(oauth2AuthorizedClient(oAuth2AuthorizedClient))
+//                .retrieve()
+//                .bodyToMono(typeRef);
+//
+//        List<Account> accounts = HystrixCommands
+//                .from( accountsPublisher )
+//                .eager()
+//                .commandName("accounts")
+//                .fallback(Flux.just(getAccountsFallback()))
+//                .toMono()
+//                .block();
+        
        // Account[] accounts = oAuth2RestTemplate.getForObject("//" + accountsService + "/accounts?type={type}", Account[].class, type);
+        Consumer<Map<String, Object>> attrs = oauth2AuthorizedClient(oAuth2AuthorizedClient);
+		Flux<Account> accounts = webClient.get().uri("//" + accountsService + "/accounts?type=" + type).attributes(attrs).retrieve().bodyToFlux(Account.class);
         return accounts;
     }
 
