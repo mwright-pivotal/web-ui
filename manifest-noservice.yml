@@ -6,6 +6,10 @@ applications:
   memory: 1G
   path: libs/web-ui-${version}.jar
   env:
+    SECURITY_OAUTH2_CLIENT_SCOPE: "openid,tanzu.bank,trade,portfolio,account"
+    SSO_IDENTITY_PROVIDERS: uaa, google
+    SSO_SCOPES: "openid,tanzu.bank,trade,portfolio,account"
+    SSO_REDIRECT_URIS: http://uaa.default:8080/login
     SPRING_PROFILES_ACTIVE: cloud
     SPRING_RABBITMQ_HOST: 10.0.1.24
     SPRING_CLOUD_KUBERNETES_CLIENT_TRUSTCERTS: true
