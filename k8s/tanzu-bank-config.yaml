@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: tanzu-bank-config
+  name: web-service
 data:
   application.yml: |-
     pivotal:
@@ -34,3 +34,14 @@ data:
         web:
           exposure:
             include: "*"
+    spring:
+      security:
+        oauth2:
+          client:
+            registration:
+              uaa: 
+                client-id: tanzu_zoneadmin
+                client-secret: tanzu
+                scope: scope=resource.read,resource.write,openid,profile
+            provider:
+              issuer-uri: https://uaa.cf4k8s.wrightcode.io/oauth/token
